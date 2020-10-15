@@ -1,4 +1,4 @@
-package com.jim.server.listener;
+package com.jim.server.common.listener;
 
 import org.jim.core.ImChannelContext;
 import org.jim.core.ImPacket;

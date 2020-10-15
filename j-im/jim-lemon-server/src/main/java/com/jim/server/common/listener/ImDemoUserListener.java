@@ -1,4 +1,4 @@
-package com.jim.server.listener;
+package com.jim.server.common.listener;
 
 import com.alibaba.fastjson.JSONObject;
 import org.jim.core.ImChannelContext;

@@ -1,9 +1,9 @@
 package com.jim.server;
 
-import com.jim.server.command.DemoWsHandshakeProcessor;
-import com.jim.server.listener.ImDemoGroupListener;
-import com.jim.server.listener.ImDemoUserListener;
-import com.jim.server.service.LoginServiceProcessor;
+import com.jim.server.common.command.DemoWsHandshakeProcessor;
+import com.jim.server.common.listener.ImDemoGroupListener;
+import com.jim.server.common.listener.ImDemoUserListener;
+import com.jim.server.common.service.LoginServiceProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.jim.core.packets.Command;
 import org.jim.core.utils.PropUtil;
@@ -17,14 +17,20 @@ import org.jim.server.config.PropertyImServerConfigBuilder;
 import org.jim.server.processor.chat.DefaultAsyncChatMessageProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.tio.core.ssl.SslConfig;
 
-import java.io.IOException;
-
-@SpringBootApplication
+@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 public class JimServerApplication {
 
+
     public static void main(String[] args) throws Exception {
+        SpringApplication.run(JimServerApplication.class, args);
+    }
+
+    @Bean(initMethod = "start")
+    public JimServer jimServer() throws Exception {
         ImServerConfig imServerConfig = new PropertyImServerConfigBuilder("config/jim.properties").build();
         //初始化SSL;(开启SSL之前,你要保证你有SSL证书哦...)
         initSsl(imServerConfig);
@@ -46,7 +52,8 @@ public class JimServerApplication {
         ChatReqHandler chatReqHandler = CommandManager.getCommand(Command.COMMAND_CHAT_REQ, ChatReqHandler.class);
         chatReqHandler.setSingleProcessor(new DefaultAsyncChatMessageProcessor());
         /*****************end *******************************************************************************************/
-        jimServer.start();
+//        jimServer.start();
+        return jimServer;
     }
 
     /**

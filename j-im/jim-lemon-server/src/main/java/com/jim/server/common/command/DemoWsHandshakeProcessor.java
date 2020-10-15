@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.jim.server.command;
+package com.jim.server.common.command;
 
 import org.jim.core.ImChannelContext;
 import org.jim.core.ImConst;

@@ -1,9 +1,13 @@
 /**
  * 
  */
-package com.jim.server.service;
+package com.jim.server.common.service;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.db.Entity;
+import com.jim.server.common.utils.spring.SpringUtils;
+import com.jim.server.project.entity.SysUser;
+import com.jim.server.project.service.UserService;
 import org.jim.core.ImChannelContext;
 import org.jim.core.ImConst;
 import org.jim.core.packets.*;
@@ -14,6 +18,7 @@ import org.jim.server.protocol.AbstractProtocolCmdProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -91,7 +96,8 @@ public class LoginServiceProcessor extends AbstractProtocolCmdProcessor implemen
 	}
 	
 	public String nextImg() {
-		return ImgMnService.nextImg();
+		return com.jim.server.service.ImgMnService.nextImg();
+//		return null;
 	}
 
 	/**
@@ -101,6 +107,9 @@ public class LoginServiceProcessor extends AbstractProtocolCmdProcessor implemen
 	 */
 	@Override
 	public LoginRespBody doLogin(LoginReqBody loginReqBody, ImChannelContext imChannelContext) {
+		UserService userService = SpringUtils.getBean(UserService.class);
+		List<SysUser> user;
+		user = userService.getUser();
 		if(Objects.nonNull(loginReqBody.getUserId()) && Objects.nonNull(loginReqBody.getPassword())){
 			return LoginRespBody.success();
 		}else {

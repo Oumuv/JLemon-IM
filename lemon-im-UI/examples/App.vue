@@ -46,6 +46,14 @@
         >
       </div>
 
+      <div>
+        <label>用户名:</label>
+        <input  id="username" :value="username"/>
+        <label style="width: 60px;">密码:</label>
+        <input  id="password" :value ="password"/>
+      </div>
+
+
       <div class="link">
         <a target="_blank" href="https://github.com/fanjyy/lemon-imui">Github</a>
         <a target="_blank" href="https://gitee.com/june000/lemon-im">Gitee</a>
@@ -55,6 +63,104 @@
 </template>
 
 <script>
+
+  //*****************************
+  // //登陆通知处理
+  // function COMMAND_LOGIN_RESP(dataObj,data){
+  //   if(10007 == dataObj.code){//登陆成功;
+  //     // logDiv.innerHTML+="<font color='green' size='1'>连接成功...</font><br>";
+  //     var userCmd = "{\"cmd\":17,\"type\":\"0\",\"userId\":\""+this.username+"\"}";
+  //     var msgCmd = "{\"cmd\":19,\"type\":\"0\",\"userId\":\""+this.username+"\"}";
+  //     this.socket.send(userCmd);//获取登录用户信息;
+  //     this.socket.send(msgCmd);//获取用户离线消息(好友+群组);
+  //     // scrollToBottom();
+  //   }else if(10008 == dataObj.code){//登录失败;
+  //   //   OTHER(data);
+  //   }
+  // }
+  // function COMMAND_EXIT_GROUP_NOTIFY_RESP(data){
+  //   // var exitGroupNotify = data.data;
+  //   // var onlineUserCmd = "{\"cmd\":17,\"type\":\"0\",\"userId\":\""+curUser.userId+"\"}";
+  //   // logDiv.innerHTML+="<font color='#A3A3A3' size='1'>"+exitGroupNotify.user.nick+"("+exitGroupNotify.user.userId+")退出群聊...</font><br>";
+  //   // socket.send(onlineUserCmd);//获取在线用户列表;
+  // }
+  // //加入群组的消息通知处理;
+  // function COMMAND_JOIN_GROUP_NOTIFY_RESP(data){
+  //   // var user = data.user;
+  //   // logDiv.innerHTML+="<font color='#A3A3A3' size='1'>"+user.nick+"("+user.userId+")加入群聊...</font><br>";
+  //   // var onlineUserCmd = "{\"cmd\":17,\"type\":\"0\",\"userId\":\""+curUser.userId+"\"}";
+  //   // socket.send(onlineUserCmd);//获取在线用户列表;
+  // }
+  // //加入群组响应状态处理;
+  // function COMMAND_JOIN_GROUP_RESP(data){
+  //   //成功加入群组响应信息;
+  // }
+  // //发送聊天请求发送状态处理;
+  // function COMMAND_CHAT_RESP_SEND_STATUS(data){
+  //   //发送成功后的状态处理...
+  // }
+  // //获取用户信息响应处理;
+  // function COMMAND_GET_USER_RESP(data){
+  //   // var user =  data.data;
+  //   // curUser = user;
+  //   // initOnlineUsers();
+  // }
+  // //接收到聊天响应处理;
+  // function COMMAND_CHAT_RESP(data){
+  //   // var chatObj = data.data;
+  //   // var createTime = new Date(chatObj.createTime).Format("yyyy/MM/dd HH:mm:ss");
+  //   // var from = chatObj.from;
+  //   // if(from == username)
+  //   //   return;
+  //   // var content = chatObj.content;
+  //   // var user = getOnlineUserById(from);
+  //   // if(user){
+  //   //   logDiv.innerHTML+="<font color='#009ACD' size='1' style='font-weight: bold'>"+user.nick+"("+user.id+")"+" "+createTime+"</font><br>";
+  //   // }else{
+  //   //   logDiv.innerHTML+="<font color='#009ACD' size='1' style='font-weight: bold'>"+from+" "+createTime+"</font><br>";
+  //   // }
+  //   // //处理数据
+  //   // logDiv.innerHTML+="<font color='#FFFFFF' size='1'>&nbsp;"+content+"</font><br>";
+  // }
+  // //处理用户同步+持久化消息
+  // function COMMAND_GET_MESSAGE_RESP(data,msgFlag){
+  //   // var msgObj = data.data;
+  //   // friendOfflineMessage(msgObj,msgFlag);
+  //   // groupOfflineMessage(msgObj,msgFlag);
+  // }
+  // //好友消息
+  // function friendOfflineMessage(msgObj,msgFlag){
+  //   // var friends = msgObj.friends;
+  //   // for (var key in friends) {
+  //   //   var chatDatas = friends[key];
+  //   //   for(var index in chatDatas){
+  //   //     var user_id = chatDatas[index].from;
+  //   //     var createTime = new Date(chatDatas[index].createTime).Format("yyyy/MM/dd HH:mm:ss");
+  //   //     logDiv.innerHTML+="<font color='	#009ACD' size='1' style='font-weight: bold'>"+user_id+"</font><font color='#DC143C' size='1' style='font-weight: bold'>(好友"+msgFlag+")</font>"+"<font color='#009ACD' size='1' style='font-weight: bold'>"+createTime+"</font><br>";
+  //   //     logDiv.innerHTML+="<font color='#FFFFFF' size='1'>&nbsp;"+chatDatas[index].content+"</font><br>";
+  //   //   }
+  //   // }
+  // }
+  // //群组消息
+  // function groupOfflineMessage(msgObj,msgFlag){
+  //   // var groups = msgObj.groups;
+  //   // for (var key in groups) {
+  //   //   var chatDatas = groups[key];
+  //   //   for(var index in chatDatas){
+  //   //     var user_id = chatDatas[index].from;
+  //   //     var createTime = new Date(chatDatas[index].createTime).Format("yyyy/MM/dd HH:mm:ss");
+  //   //     logDiv.innerHTML+="<font color='	#009ACD' size='1' style='font-weight: bold'>"+user_id+"</font><font color='#DC143C' size='1' style='font-weight: bold'>(群聊["+chatDatas[index].groupId+"]"+msgFlag+")</font>"+"<font color='#009ACD' size='1' style='font-weight: bold'>"+createTime+"</font><br>";
+  //   //     logDiv.innerHTML+="<font color='#FFFFFF' size='1'>&nbsp;"+chatDatas[index].content+"</font><br>";
+  //   //   }
+  //   // }
+  // }
+  // //其它信息处理;
+  // function OTHER(data){
+  //   //处理数据
+  //   // logDiv.innerHTML+="<font color='green' size='1'>"+data+"</font><br>";
+  // }
+  //*****************************
+
 const getTime = () => {
   return new Date().getTime();
 };
@@ -93,6 +199,11 @@ export default {
   name: "app",
   data() {
     return {
+      socket: undefined,
+      username: '123',
+      password: '345',
+
+
       hideMenuAvatar: false,
       hideMenu: false,
       user: {
@@ -104,6 +215,7 @@ export default {
     };
   },
   mounted() {
+    this.initSocket();
     const contactData1 = {
       id: "contact-1",
       displayName: "工作协作群",
@@ -505,6 +617,145 @@ export default {
     ]);
   },
   methods: {
+    //登陆通知处理
+    COMMAND_LOGIN_RESP(dataObj, data) {
+      if (10007 == dataObj.code) {//登陆成功;
+        // logDiv.innerHTML+="<font color='green' size='1'>连接成功...</font><br>";
+        var userCmd = "{\"cmd\":17,\"type\":\"0\",\"userId\":\"" + this.username + "\"}";
+        var msgCmd = "{\"cmd\":19,\"type\":\"0\",\"userId\":\"" + this.username + "\"}";
+        this.socket.send(userCmd);//获取登录用户信息;
+        this.socket.send(msgCmd);//获取用户离线消息(好友+群组);
+        // scrollToBottom();
+      } else if (10008 == dataObj.code) {//登录失败;
+        this.OTHER(data);
+      }
+    },
+    COMMAND_EXIT_GROUP_NOTIFY_RESP(data) {
+      // var exitGroupNotify = data.data;
+      // var onlineUserCmd = "{\"cmd\":17,\"type\":\"0\",\"userId\":\""+curUser.userId+"\"}";
+      // logDiv.innerHTML+="<font color='#A3A3A3' size='1'>"+exitGroupNotify.user.nick+"("+exitGroupNotify.user.userId+")退出群聊...</font><br>";
+      // socket.send(onlineUserCmd);//获取在线用户列表;
+    },
+    //加入群组的消息通知处理;
+    COMMAND_JOIN_GROUP_NOTIFY_RESP(data) {
+      // var user = data.user;
+      // logDiv.innerHTML+="<font color='#A3A3A3' size='1'>"+user.nick+"("+user.userId+")加入群聊...</font><br>";
+      // var onlineUserCmd = "{\"cmd\":17,\"type\":\"0\",\"userId\":\""+curUser.userId+"\"}";
+      // socket.send(onlineUserCmd);//获取在线用户列表;
+    },
+    //加入群组响应状态处理;
+    COMMAND_JOIN_GROUP_RESP(data) {
+      //成功加入群组响应信息;
+    },
+    //发送聊天请求发送状态处理;
+    COMMAND_CHAT_RESP_SEND_STATUS(data) {
+      //发送成功后的状态处理...
+    },
+    //获取用户信息响应处理;
+    COMMAND_GET_USER_RESP(data) {
+      // var user =  data.data;
+      // curUser = user;
+      // initOnlineUsers();
+    },
+    //接收到聊天响应处理;
+    COMMAND_CHAT_RESP(data) {
+      // var chatObj = data.data;
+      // var createTime = new Date(chatObj.createTime).Format("yyyy/MM/dd HH:mm:ss");
+      // var from = chatObj.from;
+      // if(from == username)
+      //   return;
+      // var content = chatObj.content;
+      // var user = getOnlineUserById(from);
+      // if(user){
+      //   logDiv.innerHTML+="<font color='#009ACD' size='1' style='font-weight: bold'>"+user.nick+"("+user.id+")"+" "+createTime+"</font><br>";
+      // }else{
+      //   logDiv.innerHTML+="<font color='#009ACD' size='1' style='font-weight: bold'>"+from+" "+createTime+"</font><br>";
+      // }
+      // //处理数据
+      // logDiv.innerHTML+="<font color='#FFFFFF' size='1'>&nbsp;"+content+"</font><br>";
+    },
+    //处理用户同步+持久化消息
+    COMMAND_GET_MESSAGE_RESP(data, msgFlag) {
+      // var msgObj = data.data;
+      // friendOfflineMessage(msgObj,msgFlag);
+      // groupOfflineMessage(msgObj,msgFlag);
+    },
+    //好友消息
+    friendOfflineMessage(msgObj, msgFlag) {
+      // var friends = msgObj.friends;
+      // for (var key in friends) {
+      //   var chatDatas = friends[key];
+      //   for(var index in chatDatas){
+      //     var user_id = chatDatas[index].from;
+      //     var createTime = new Date(chatDatas[index].createTime).Format("yyyy/MM/dd HH:mm:ss");
+      //     logDiv.innerHTML+="<font color='	#009ACD' size='1' style='font-weight: bold'>"+user_id+"</font><font color='#DC143C' size='1' style='font-weight: bold'>(好友"+msgFlag+")</font>"+"<font color='#009ACD' size='1' style='font-weight: bold'>"+createTime+"</font><br>";
+      //     logDiv.innerHTML+="<font color='#FFFFFF' size='1'>&nbsp;"+chatDatas[index].content+"</font><br>";
+      //   }
+      // }
+    },
+    //群组消息
+    groupOfflineMessage(msgObj, msgFlag) {
+      // var groups = msgObj.groups;
+      // for (var key in groups) {
+      //   var chatDatas = groups[key];
+      //   for(var index in chatDatas){
+      //     var user_id = chatDatas[index].from;
+      //     var createTime = new Date(chatDatas[index].createTime).Format("yyyy/MM/dd HH:mm:ss");
+      //     logDiv.innerHTML+="<font color='	#009ACD' size='1' style='font-weight: bold'>"+user_id+"</font><font color='#DC143C' size='1' style='font-weight: bold'>(群聊["+chatDatas[index].groupId+"]"+msgFlag+")</font>"+"<font color='#009ACD' size='1' style='font-weight: bold'>"+createTime+"</font><br>";
+      //     logDiv.innerHTML+="<font color='#FFFFFF' size='1'>&nbsp;"+chatDatas[index].content+"</font><br>";
+      //   }
+      // }
+    },
+    //其它信息处理;
+    OTHER(data) {
+      //处理数据
+      // logDiv.innerHTML+="<font color='green' size='1'>"+data+"</font><br>";
+    },
+    //初始化
+    initSocket() {
+      var _this = this;
+      this.socket = new WebSocket("ws:localhost:8881?username=" + this.username + "&password=" + this.password);
+      this.socket.onopen = function (e) {
+      };
+      this.socket.onerror = function (e) {
+      };
+      this.socket.onclose = function (e) {
+      };
+      this.socket.onmessage = function (e) {
+        var data = e.data;
+        console.log(data);
+        var dataObj = eval("(" + data + ")");//转换为json对象
+        if (dataObj.command == 11) {//接收到聊天响应处理;
+          _this.COMMAND_CHAT_RESP(dataObj);
+        } else if (dataObj.command == 18) {//获取用户信息响应处理;
+          _this.COMMAND_GET_USER_RESP(dataObj);
+        } else if (10000 == dataObj.code && dataObj.command == 12) {//聊天发送状态;
+          _this.COMMAND_CHAT_RESP_SEND_STATUS(data);
+        } else if (dataObj.command == 9) {//加入群组的消息通知处理;
+          _this.COMMAND_JOIN_GROUP_NOTIFY_RESP(dataObj);
+        } else if (dataObj.command == 10) {
+          _this.COMMAND_EXIT_GROUP_NOTIFY_RESP(dataObj);
+        } else if (dataObj.command == 20 && dataObj.code == 10015) {
+          //获取消息失败，未开启持久化处理
+          //...
+        } else if (dataObj.command == 20 && dataObj.code == 10016) {//处理离线消息;
+          var msgFlag = "离线消息";
+          _this.COMMAND_GET_MESSAGE_RESP(dataObj, msgFlag);
+        } else if (dataObj.command == 20 && dataObj.code == 10018) {//处理历史消息;
+          var msgFlag = "历史消息";
+          var msgObj = dataObj.data;
+          if (msgObj) {
+            _this.COMMAND_GET_MESSAGE_RESP(dataObj, msgFlag);
+          } else {//没有历史消息;
+            _this.OTHER(data);
+          }
+        } else if (dataObj.command == 6) {//登陆命令返回状态处理
+          _this.COMMAND_LOGIN_RESP(dataObj, data);
+        } else {
+          _this.OTHER(data);
+        }
+      }
+    },
     handleMenuAvatarClick() {
       console.log("Event:menu-avatar-click");
     },
