@@ -29,7 +29,7 @@ public class JimServerApplication {
         SpringApplication.run(JimServerApplication.class, args);
     }
 
-    @Bean(initMethod = "start")
+//    @Bean(initMethod = "start")
     public JimServer jimServer() throws Exception {
         ImServerConfig imServerConfig = new PropertyImServerConfigBuilder("config/jim.properties").build();
         //初始化SSL;(开启SSL之前,你要保证你有SSL证书哦...)
