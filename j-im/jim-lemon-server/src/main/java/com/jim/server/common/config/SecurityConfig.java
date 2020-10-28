@@ -14,19 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * spring security配置
- * 
+ *
  * @author ruoyi
  */
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    /**
-     * 自定义用户认证逻辑
-     */
-    @Autowired
-    private UserDetailsService userDetailsService;
-    
-
 
     /**
      * 解决 无法直接注入 AuthenticationManager
@@ -69,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 // 过滤请求
                 .authorizeRequests()
                 // 对于登录login 验证码captchaImage 允许匿名访问
-                .antMatchers("/login", "/captchaImage").anonymous()
+                .antMatchers("/server/user/login", "/captchaImage").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
                         "/*.html",
@@ -88,22 +81,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 //        httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    
-    /**
-     * 强散列哈希加密实现
-     */
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder()
-    {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * 身份认证接口
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception
-    {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
 }

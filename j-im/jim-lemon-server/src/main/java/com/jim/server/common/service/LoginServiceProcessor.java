@@ -4,10 +4,9 @@
 package com.jim.server.common.service;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.db.Entity;
-import com.jim.server.common.utils.spring.SpringUtils;
-import com.jim.server.project.entity.SysUser;
-import com.jim.server.project.service.UserService;
+import com.jim.server.common.security.LoginUser;
+import com.jim.server.common.security.service.TokenService;
+import com.jim.server.common.utils.RedisCacheTemplate;
 import org.jim.core.ImChannelContext;
 import org.jim.core.ImConst;
 import org.jim.core.packets.*;
@@ -17,15 +16,22 @@ import org.jim.server.processor.login.LoginCmdProcessor;
 import org.jim.server.protocol.AbstractProtocolCmdProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
  * @author WChao
  *
  */
+@Component
 public class LoginServiceProcessor extends AbstractProtocolCmdProcessor implements LoginCmdProcessor {
+	@Autowired
+	private TokenService tokenService;
+
+	@Autowired
+	RedisCacheTemplate redisCacheTemplate;
 
 	private Logger logger = LoggerFactory.getLogger(LoginServiceProcessor.class);
 
@@ -46,14 +52,15 @@ public class LoginServiceProcessor extends AbstractProtocolCmdProcessor implemen
 	 * @return
 	 * @author: WChao
 	 */
+	@Override
 	public User getUser(LoginReqBody loginReqBody, ImChannelContext imChannelContext) {
-		String text = loginReqBody.getUserId()+loginReqBody.getPassword();
-		String key = ImConst.AUTH_KEY;
-		String token = Md5.sign(text, key, CHARSET);
+		String token = tokenService.getToken(loginReqBody.getUserId(),loginReqBody.getPassword());
 		User user = getUser(token);
 		user.setUserId(loginReqBody.getUserId());
 		return user;
 	}
+
+
 	/**
 	 * 根据token获取用户信息
 	 * @param token
@@ -61,23 +68,21 @@ public class LoginServiceProcessor extends AbstractProtocolCmdProcessor implemen
 	 * @author: WChao
 	 */
 	public User getUser(String token) {
+		LoginUser loginUser = tokenService.getLoginUser(token);
 		//demo中用map，生产环境需要用cache
 		User user = tokenMap.get(token);
 		if(Objects.nonNull(user)){
 			return user;
 		}
 		User.Builder builder = User.newBuilder()
-				.userId(UUIDSessionIdGenerator.instance.sessionId(null))
-				.nick(familyName[RandomUtil.randomInt(0, familyName.length - 1)] + secondName[RandomUtil.randomInt(0, secondName.length - 1)])
+				.userId(loginUser.getUsername())
+				.nick(loginUser.getUser().getNick())
 				//模拟的群组,正式根据业务去查数据库或者缓存;
-				.addGroup(Group.newBuilder().groupId("100").name("J-IM朋友圈").build());
-		 //模拟的用户好友,正式根据业务去查数据库或者缓存;
+				.addGroup(Group.newBuilder().groupId("100").name("在线好友").build());
+		//模拟的用户好友,正式根据业务去查数据库或者缓存;
 		initFriends(builder);
 		builder.avatar(nextImg()).status(UserStatusType.ONLINE.getStatus());
 		user = builder.build();
-		if (tokenMap.size() > 10000) {
-			tokenMap.clear();
-		}
 		tokenMap.put(token, user);
 		return user;
 	}
@@ -107,9 +112,9 @@ public class LoginServiceProcessor extends AbstractProtocolCmdProcessor implemen
 	 */
 	@Override
 	public LoginRespBody doLogin(LoginReqBody loginReqBody, ImChannelContext imChannelContext) {
-		UserService userService = SpringUtils.getBean(UserService.class);
-		List<SysUser> user;
-		user = userService.getUser();
+		if (Objects.nonNull(loginReqBody.getToken())) {
+			return LoginRespBody.success();
+		}
 		if(Objects.nonNull(loginReqBody.getUserId()) && Objects.nonNull(loginReqBody.getPassword())){
 			return LoginRespBody.success();
 		}else {

@@ -1,28 +1,31 @@
 package com.jim.server.common.api;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jim.server.common.utils.spring.SpringUtils;
+import com.jim.server.project.service.UserService;
 import org.apache.commons.io.FileUtils;
 import org.jim.core.http.HttpRequest;
 import org.jim.core.http.HttpResponse;
 import org.jim.core.http.UploadFile;
 import org.jim.core.packets.User;
+import org.jim.server.protocol.http.annotation.RequestPath;
 import org.jim.server.util.HttpResps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.tio.utils.json.Json;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author WChao
  * 2017年6月29日 下午7:53:59
  */
-@RequestMapping(value = "/test")
-@RestController
+@RequestPath(value = "/test")
 public class TestController {
 	private static Logger log = LoggerFactory.getLogger(TestController.class);
-
 	/**
 	 * @param args
 	 * @author WChao
@@ -44,76 +47,77 @@ public class TestController {
 	public TestController() {
 	}
 
-	@RequestMapping(value = "/abtest")
+	@RequestPath(value = "/abtest")
 	public HttpResponse abtest(HttpRequest request) throws Exception {
 		log.info("");
 		HttpResponse ret = HttpResps.html(request, "OK");
 		return ret;
 	}
 
-	@RequestMapping(value = "/bean")
+	@RequestPath(value = "/bean")
 	public HttpResponse bean(User user, HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.json(request, Json.toFormatedJson(user));
 		return ret;
 	}
 
-	@RequestMapping(value = "/filetest")
+	@RequestPath(value = "/filetest")
 	public HttpResponse filetest(HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.file(request, new File("d:/tio.exe"));
 		return ret;
 	}
 
-	@RequestMapping(value = "/filetest.zip")
+	@RequestPath(value = "/filetest.zip")
 	public HttpResponse filetest_zip(HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.file(request, new File("d:/eclipse-jee-neon-R-win32-x86_64.zip"));
 		return ret;
 	}
 
-	@RequestMapping(value = "/getsession")
+	@RequestPath(value = "/getsession")
 	public HttpResponse getsession(HttpRequest request) throws Exception {
 		String value = (String) request.getHttpSession().getAttribute("test");
 		HttpResponse ret = HttpResps.json(request, "获取的值:" + value);
 		return ret;
 	}
 
-	@RequestMapping(value = "/html")
+	@RequestPath(value = "/html")
 	public HttpResponse html(HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.html(request, html);
 		return ret;
 	}
 
-	@RequestMapping(value = "/json")
+	@RequestPath(value = "/json")
 	public HttpResponse json(HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.json(request, "{\"ret\":\"OK\"}");
 		return ret;
 	}
 
-	@RequestMapping(value = "/plain")
+	@RequestPath(value = "/plain")
 	public HttpResponse plain(String before, String end, HttpRequest request) throws Exception {
 		String bodyString = request.getBodyString();
 		HttpResponse ret = HttpResps.html(request, bodyString);
 		return ret;
 	}
 
-	@RequestMapping(value = "/post")
+	@RequestPath(value = "/post")
 	public HttpResponse post(String before, String end, HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.html(request, "before:" + before + "<br>end:" + end);
 		return ret;
 
 	}
 
-	@RequestMapping(value = "/putsession")
+	@RequestPath(value = "/putsession")
 	public HttpResponse putsession(String value, HttpRequest request) throws Exception {
 		request.getHttpSession().setAttribute("test", value, request.getHttpConfig());
 		HttpResponse ret = HttpResps.json(request, "设置成功:" + value);
 		return ret;
 	}
 
-	@RequestMapping(value = "/txt")
+	@RequestPath(value = "/txt")
 	public HttpResponse txt(HttpRequest request) throws Exception {
 		HttpResponse ret = HttpResps.txt(request, txt);
 		return ret;
 	}
+
 
 	/**
 	 * 上传文件测试
@@ -125,8 +129,10 @@ public class TestController {
 	 * @throws Exception
 	 * @author WChao
 	 */
-	@RequestMapping(value = "/upload")
+	@RequestPath(value = "/upload")
 	public HttpResponse upload(UploadFile uploadFile, String before, String end, HttpRequest request) throws Exception {
+		UserService userService = SpringUtils.getBean(UserService.class);
+		List<com.jim.server.project.entity.User> list = userService.list(new QueryWrapper<>());
 		HttpResponse ret;
 		if (uploadFile != null) {
 			File file = new File("D:/" + uploadFile.getName());
