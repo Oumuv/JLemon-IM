@@ -1,14 +1,16 @@
 const path = require("path");
+
 function resolve(dir) {
   return path.join(__dirname, "", dir);
 }
 module.exports = {
   devServer: {
-    proxy: 'http://localhost:8881'
+    port: 8099,
+    proxy: 'http://localhost:8081'
   },
   pages: {
     index: {
-      entry: "examples/main.js",
+      entry: "src/main.js",
       template: "public/index.html",
       filename: "index.html"
     }
